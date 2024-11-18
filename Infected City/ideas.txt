@@ -1,1 +1,6 @@
-Main actor is a tank. You are in a dark city and the enemies are insects/ bug creatures.
+- Difficulty levels:
+  - easy has more lives, less enemies, higher cooldown after being hit, shorter reload time
+- flash when hit
+- powerups
+  - no reload time 
+  - More lives
