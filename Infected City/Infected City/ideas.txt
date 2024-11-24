@@ -1,0 +1,65 @@
+- Difficulty levels:
+  - easy has more lives, less enemies, higher cooldown after being hit, shorter reload time
+- flash when hit
+- powerups
+  - Shield
+  - coins
+  - no reload time 
+  - More lives
+
+
+  def draw():
+
+    global stage,livelist,walls,bullets, enemy_attributes,start_time,lives,game_complete_time,level_start_time, stats, old_stats
+    screen.clear()
+    if not stage:
+        screen.blit("titlescreen", (0, 0))
+        screen.draw.text("Infected City", (WIDTH/5, HEIGHT/5), color = (255,255,255), fontsize=150)
+        rect = Rect((WIDTH-180, HEIGHT-120),(180, 120))
+        screen.draw.filled_rect(rect, (0,0,0))
+        easy.draw()
+        hard.draw()
+        start_button.draw()
+        for key in stats:
+            stats[key]=0
+        if difficulty:
+            screen.draw.text("Hard Mode Selected", (WIDTH/2.5, HEIGHT-150), color = (255,255,255))
+        else:
+            screen.draw.text("Easy Mode Selected", (WIDTH/2.5, HEIGHT-150), color = (255,255,255))
+
+    elif stage in [1,2,3]:
+        if len(livelist):
+            screen.fill((25,25,25),)
+            tank.draw()
+            draw_list(walls)
+            draw_list(livelist)
+            draw_list(bullets)
+            handle_power_ups()
+            handle_effects()
+            display_effects()
+            draw_list(powerups["actors"])
+
+
+            screen.draw.text(f"Score: {stats['score']}", (WIDTH-160, 20), color = (255,255,255), fontsize = 45)
+            screen.draw.text(f"Kills: {stats['kills']}",( WIDTH-160, HEIGHT -30), color = (255,255,255), fontsize = 45)
+            for x in range(len(enemy_attributes["enemies"])):
+                if time.time()-level_start_time > x and enemy_attributes["health"][x]>0:
+                    enemy_attributes["enemies"][x].draw()
+                    enemy_attributes["drawn"][x]= True
+                if not (0<enemy_attributes["enemies"][x].x<WIDTH) or not (0<enemy_attributes["enemies"][x].y<HEIGHT):
+                    enemy_attributes["health"][x] = 0
+                    continue
+                
+            if all_defeated(enemy_attributes["health"]):
+                next_button.draw()
+
+        else:
+            if not stats["time"]:
+                stats["time"]= int(time.time()-start_time)
+
+            gameFinished('gameover', old_stats)
+
+    else: 
+        if not stats["time"]:
+            stats["time"]= int(time.time()-start_time)
+        gameFinished('win', old_stats)
